@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+//schema:  logical representation of data or structure of document
 const userSchema = new mongoose.Schema(
   {
     fname: { type: String, required: true, trim: true, },

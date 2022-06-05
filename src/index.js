@@ -3,13 +3,13 @@ const express = require("express");
 //body parser is a middleware, used to process data sent through an HTTP request body.
 const bodyParser = require("body-parser");
 const route = require("./route/route"); //imported route
-const mongoose = require("mongoose"); //ODM library for mongoDB
+const mongoose = require("mongoose"); //Object data modeling library for mongoDB
 const app = express(); //Assign express in app variable
-const multer = require("multer");
-const { AppConfig } = require("aws-sdk");
+const multer = require("multer"); //multiform data
+
 
 app.use(bodyParser.json()); //transforms the text-based JSON input into JS-accessible variables
-app.use(bodyParser.urlencoded({ extended: true }));
+
 //extended: true precises that the req.body object will contain values of any type instead of just strings.
 app.use(multer().any());
 

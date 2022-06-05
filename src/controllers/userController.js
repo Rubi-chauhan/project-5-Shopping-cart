@@ -13,174 +13,130 @@ const createUser = async function (req, res) {
 
     //empty request body
     if (!isValidRequestBody(body)) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Please provide input" });
+      return res.status(400).send({ status: false, message: "Please provide input" });
     }
 
     //mandatory fields
     if (!isValid(fname)) {
       {
-        return res
-          .status(400)
-          .send({ status: false, message: "Please provide fname" });
+        return res.status(400).send({ status: false, message: "Please provide fname" });
       }
     }
 
     if (!isValid(lname)) {
       {
-        return res
-          .status(400)
-          .send({ status: false, message: "Please provide lname" });
+        return res.status(400).send({ status: false, message: "Please provide lname" });
       }
     }
 
     if (!isValid(email)) {
-      {
-        return res
-          .status(400)
-          .send({ status: false, message: "Please provide email" });
+      {return res.status(400).send({ status: false, message: "Please provide email" });
       }
     }
 
     if (!isValid(phone)) {
-      {
-        return res
-          .status(400)
-          .send({ status: false, message: "Please provide phone" });
+      {return res.status(400).send({ status: false, message: "Please provide phone" });
       }
     }
 
     if (!isValid(password)) {
-      {
-        return res
-          .status(400)
-          .send({ status: false, message: "Please provide password" });
+      {return res.status(400).send({ status: false, message: "Please provide password" });
       }
     }
 
     if (!isValid(address)) {
       {
-        return res
-          .status(400)
-          .send({ status: false, message: "Please provide address" });
+        return res.status(400).send({ status: false, message: "Please provide address" });
       }
     }
+
 
     if (address) {
       const parsedAddress = JSON.parse(body.address);
       address = parsedAddress;
       body.address = address
+      if (!isValid(address.shipping)) {
+        return res.status(400).send({ status: false, message: "Shipping address is required" })
+      }
       if (!address.shipping.street) {
         {
-          return res
-            .status(400)
-            .send({ status: false, message: "Please provide street" });
+          return res.status(400).send({ status: false, message: "Please provide street" });
         }
       }
 
       if (!address.shipping.city) {
         {
-          return res
-            .status(400)
-            .send({ status: false, message: "Please provide city" });
+          return res.status(400).send({ status: false, message: "Please provide city" });
         }
       }
 
       if (!address.shipping.pincode) {
         {
-          return res
-            .status(400)
-            .send({ status: false, message: "Please provide pincode" });
+          return res.status(400).send({ status: false, message: "Please provide pincode" });
         }
       }
 
       if (!pincodeRegex.test(address.shipping.pincode)) {
-        return res
-          .status(400)
-          .send({ status: false, message: "Please provide a valid pincode " });
+        return res.status(400).send({ status: false, message: "Please provide a valid pincode " });
+      }
+      
+      if (!isValid(address.billing)) {
+        return res.status(400).send({ status: false, message: "Billing address is required" })
       }
 
       if (!address.billing.street) {
         {
-          return res
-            .status(400)
-            .send({ status: false, message: "Please provide street" });
+          return res.status(400).send({ status: false, message: "Please provide street" });
         }
       }
 
       if (!address.billing.city) {
         {
-          return res
-            .status(400)
-            .send({ status: false, message: "Please provide city" });
+          return res.status(400).send({ status: false, message: "Please provide city" });
         }
       }
 
       if (!address.billing.pincode) {
         {
-          return res
-            .status(400)
-            .send({ status: false, message: "Please provide pincode" });
+          return res.status(400).send({ status: false, message: "Please provide pincode" });
         }
       }
 
       if (!pincodeRegex.test(address.billing.pincode)) {
-        return res
-          .status(400)
-          .send({ status: false, message: "Please provide a valid pincode " });
+        return res.status(400).send({ status: false, message: "Please provide a valid pincode " });
       }
     }
 
     //format validation using regex
 
     if (!nameRegex.test(fname)) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Please provide a valid fname " });
+      return res.status(400).send({ status: false, message: "Please provide a valid fname " });
     }
 
     if (!nameRegex.test(lname)) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Please provide a valid lname " });
+      return res.status(400).send({ status: false, message: "Please provide a valid lname " });
     }
 
     if (!emailRegex.test(email)) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Please provide a valid emailId " });
+      return res.status(400).send({ status: false, message: "Please provide a valid emailId " });
     }
 
     if (!passwordRegex.test(password)) {
-      return res.status(400).send({
-        status: false,
-        message:
-          "Please provide a valid password - Password should include atleast one special character, one uppercase, one lowercase, one number and should be b/w 8-15 characters",
-      });
+      return res.status(400).send({status: false,message:"Please provide a valid password - Password should include atleast one special character, one uppercase, one lowercase, one number and should be b/w 8-15 characters",});
     }
 
     if (!phoneRegex.test(phone)) {
-      return res.status(400).send({
-        status: false,
-        message: "Please provide a valid indian phone number ",
-      });
+      return res.status(400).send({status: false,message: "Please provide a valid indian phone number "});
     }
 
     //unique key validation
     let checkEmail = await userModel.findOne({ email: body.email });
     if (checkEmail) {
-      return res.status(400).send({
-        status: false,
-        message: `${body.email} already exist use different email`,
-      });
+      return res.status(400).send({status: false,message: `${body.email} already exist use different email`});
     }
     let checkPhone = await userModel.findOne({ phone: body.phone });
     if (checkPhone) {
-      return res.status(400).send({
-        status: false,
-        message: `${body.phone} already exist use different phone number`,
-      });
+      return res.status(400).send({status: false, message: `${body.phone} already exist use different phone number`,});
     }
 
     //encrypt password
@@ -196,56 +152,45 @@ const createUser = async function (req, res) {
 
     let files = req.files;
     if (files && files.length > 0) {
+     
       //upload to s3 and get the uploaded link
       // res.send the link back to frontend/postman
       let uploadProfileImage = await uploadFile(files[0]); //upload file
       body.profileImage = uploadProfileImage;
     } else {
-      return res
-        .status(400)
-        .send({ status: false, message: "please upload profile image" });
+      return res.status(400).send({ status: false, message: "please upload profile image" });
     }
 
     //create body
     let userCreated = await userModel.create(body);
     res.status(201).send({ status: true, message: "User created successfully", data: userCreated, });
+
   } catch (error) {
-    res.status(500).send({
-      status: false,
-      Error: "Server not responding",
-      message: error.message,
-    });
+    res.status(500).send({status: false,Error: "Server not responding",message: error.message,});
   }
 };
 
 const login = async function (req, res) {
   try {
+
     let body = req.body;
+    
     const { email, password } = body;
     if (!isValidRequestBody(body)) {
-      return res
-        .status(400)
-        .send({ status: false, message: "pls provide details to login" });
+      return res.status(400).send({ status: false, message: "pls provide details to login" });
     }
 
     if (!isValid(email)) {
-      return res
-        .status(400)
-        .send({ status: false, message: "pls provide valid email" });
+      return res.status(400).send({ status: false, message: "pls provide valid email" });
     }
     // regex validation for email
 
     if (!emailRegex.test(email)) {
-      return res.status(400).send({
-        status: false,
-        message: `${email} should be a valid email address`,
-      });
+      return res.status(400).send({status: false,message: `${email} should be a valid email address`,});
     }
 
     if (!isValid(password)) {
-      return res
-        .status(400)
-        .send({ status: false, message: "pls provide valid password" });
+      return res.status(400).send({ status: false, message: "pls provide valid password" });
     }
 
     // regex validation for passwrd
